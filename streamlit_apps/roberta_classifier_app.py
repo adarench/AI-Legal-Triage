@@ -71,7 +71,7 @@ def load_original_model():
         # Apply post-processing=False to show original behavior
         predictor = RobertaClausePredictor(
             model_dir=original_model_dir, 
-            apply_postprocessing=False,
+            apply_postprocessing=False,  # Parameter must match exactly what's in infer_clause.py
             confidence_threshold=0  # Disable confidence threshold for original model
         )
     return predictor
