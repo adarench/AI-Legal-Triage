@@ -1,0 +1,13 @@
+{
+  "id": "adarench/ai-legal-triage-training",
+  "title": "AI Legal Triage Training",
+  "code_file": "kaggle_train.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": ["adarench/ai-legal-triage"],
+  "competition_sources": [],
+  "kernel_sources": []
+}

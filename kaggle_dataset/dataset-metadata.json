@@ -1,0 +1,10 @@
+{
+  "title": "AI Legal Triage Project",
+  "id": "adamrencher/ai-legal-triage",
+  "licenses": [
+    {
+      "name": "CC0-1.0"
+    }
+  ],
+  "description": "Project for fine-tuning RoBERTa on legal contract clauses using the CUAD dataset"
+}

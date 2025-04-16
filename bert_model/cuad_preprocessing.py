@@ -2,7 +2,17 @@ import os
 import json
 import pandas as pd
 from datasets import load_dataset
-from .label_map import LABEL_MAP
+
+# Try both relative and absolute import
+try:
+    from .label_map import LABEL_MAP
+except ImportError:
+    try:
+        from bert_model.label_map import LABEL_MAP
+    except ImportError:
+        import sys
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from bert_model.label_map import LABEL_MAP
 
 class CUADPreprocessor:
     """Class to preprocess the CUAD dataset for fine-tuning RoBERTa."""
