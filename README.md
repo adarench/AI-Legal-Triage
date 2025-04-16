@@ -1,77 +1,78 @@
-# Legal Contract Clause Risk Analyzer
+# AI Legal Triage
 
-This project is an MVP for a legal contract analysis system that uses AI to identify, classify, and assess risk levels in legal clauses.
+AI Legal Triage is a project designed to automatically analyze legal contracts, classify clauses, and assess risk levels. It helps legal professionals prioritize contract review efforts by highlighting potentially risky clauses that require immediate attention.
 
 ## Features
 
-- Parse legal contracts (.txt or .docx files) and extract individual clauses
-- Classify clauses by type (e.g., Indemnification, Confidentiality)
-- Assign risk scores from 0.0 to 1.0
-- Provide plain-language explanations of potential risks
-- Visualize results and download analysis as JSON
+- **Clause Extraction**: Extract individual clauses from legal contracts
+- **Clause Classification**: Identify the type of legal clause (e.g., Non-Compete, Limitation of Liability)
+- **Risk Assessment**: Assign risk scores (0.0-1.0) to clauses based on their type and content
+- **Two Model Approaches**:
+  - GPT-based classification (high accuracy, external API dependency)
+  - Fine-tuned RoBERTa model (local inference, no API dependency)
+- **Interactive Web Interface**: Analyze contracts and visualize results in real-time
 
-## Two Implementation Tracks
+## Demo
 
-1. **GPT-4o Powered MVP** - Production-ready Streamlit application using OpenAI's GPT-4o API for sophisticated legal analysis
-2. **RoBERTa Fine-Tuned Model** - Technical demo using a fine-tuned RoBERTa model on the CUAD dataset
+Try the interactive Streamlit app to see the system in action:
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/adarench/ai-legal-triage/main/streamlit_apps/roberta_classifier_app.py)
 
 ## Getting Started
 
 ### Prerequisites
 
+- Python 3.8+
+- PyTorch
+- Transformers (HuggingFace)
+- Streamlit
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/adarench/AI-Legal-Triage.git
+cd AI-Legal-Triage
 ```
-# Install dependencies
+
+2. Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
-### GPT-4o MVP
-
-```
-# Set your OpenAI API key
-export OPENAI_API_KEY="your-api-key-here"
-
-# Launch the Streamlit app
-cd gpt_mvp
-streamlit run app.py
+3. Run the Streamlit app:
+```bash
+streamlit run streamlit_apps/roberta_classifier_app.py
 ```
 
-### Fine-Tuned Model
+## Model Improvements
 
-```
-# Train the model (warning: requires GPU)
-cd bert_model
-python train_model.py
+The project includes two versions of the RoBERTa model:
 
-# Run inference on clauses
-python infer_clause.py
-```
+- **Original Model**: Base fine-tuned model with 60% accuracy
+- **Improved Model**: Enhanced model with post-processing rules, achieving 80% accuracy
+
+Key improvements:
+- Retrained with more epochs (5 vs 3)
+- Lower learning rate (1e-5 vs 2e-5)
+- Data augmentation for underrepresented classes
+- Post-processing rules for common errors
+- Confidence thresholding for uncertain predictions
 
 ## Project Structure
 
-```
-legal-risk-mvp/
-├── gpt_mvp/                     # GPT-4 powered MVP
-│   ├── app.py                   # Streamlit UI
-│   ├── gpt_clauses.py           # OpenAI API logic
-│   ├── clause_parser.py         # Text parsing logic
-│   ├── prompt_template.py       # Prompt definition
-│   └── __init__.py
-│
-├── bert_model/                  # Fine-tuned model demo
-│   ├── train_model.py           # Training script
-│   ├── cuad_preprocessing.py    # CUAD preprocessing
-│   ├── infer_clause.py          # Inference script
-│   ├── risk_map.py              # Clause to risk mapping
-│   ├── label_map.py             # Label encodings
-│   ├── fine_tuned_roberta/      # Trained model
-│   └── __init__.py
-│
-├── results/                     # Output files
-│   ├── sample_clauses.json      # Test clauses
-│   ├── model_comparison.json    # Comparison results
-│   └── comparison_table.csv     # Summary CSV
-│
-└── data/                        # Data directory
-    ├── test_contracts/          # Test contracts
-    └── external/                # External data
-```
+- `bert_model/`: RoBERTa model training and inference
+- `gpt_mvp/`: GPT-based classification approach
+- `streamlit_apps/`: Interactive web applications
+- `results/`: Comparison results and sample clauses
+- `data/`: Contract datasets and test files
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Built using the CUAD (Contract Understanding Atticus Dataset)
+- RoBERTa model from HuggingFace Transformers
+- OpenAI for GPT API access

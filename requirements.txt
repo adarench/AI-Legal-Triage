@@ -1,16 +1,11 @@
-# Core dependencies
-python-dotenv
-streamlit
-openai>=1.0.0
-pandas
-
-# Document parsing
-python-docx
-re
-
-# BERT model (for the second track)
-transformers
-torch
-numpy
-scikit-learn
-datasets
+torch>=1.10.0
+transformers>=4.15.0
+numpy==1.24.3
+pandas>=1.3.5
+scikit-learn>=1.0.2
+python-docx>=0.8.11
+python-dotenv>=0.20.0
+streamlit>=1.18.0
+matplotlib>=3.5.1
+seaborn>=0.11.2
+huggingface-hub>=0.12.0
