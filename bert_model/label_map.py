@@ -1,0 +1,48 @@
+# CUAD Dataset labels with indices
+
+LABEL_MAP = {
+    "Affiliate License-Licensee": 0,
+    "Affiliate License-Licensor": 1,
+    "Anti-Assignment": 2,
+    "Audit Rights": 3,
+    "Auto Renewal": 4,
+    "Change of Control": 5,
+    "Competitive Restriction Exception": 6,
+    "Competitive Restrictions": 7,
+    "Confidentiality Exception-Compelled Disclosure": 8,
+    "Confidentiality Exceptions": 9,
+    "Confidentiality Term": 10,
+    "Confidentiality": 11,
+    "Damage Cap": 12,
+    "Effective Date": 13,
+    "Exclusivity": 14,
+    "Expiration Date": 15,
+    "Governing Law": 16,
+    "Indemnification": 17,
+    "Insurance": 18,
+    "IP Ownership Assignment": 19,
+    "Limitation of Liability": 20,
+    "Limited License": 21,
+    "Liquidated Damages": 22,
+    "Minimum Commitment": 23,
+    "Minimum Term": 24,
+    "Most Favored Nation": 25,
+    "No-Solicit Of Customers": 26,
+    "No-Solicit Of Employees": 27,
+    "Non-Compete": 28,
+    "Non-Disparagement": 29,
+    "Post-Term Services": 30,
+    "Price Restrictions": 31,
+    "Product Warranty": 32,
+    "Renewal Term": 33,
+    "Revenue/Profit Sharing": 34,
+    "Source Code Escrow": 35,
+    "Termination For Convenience": 36,
+    "Termination For Insolvency": 37,
+    "Termination Rights": 38,
+    "Third Party Beneficiary": 39,
+    "Uncategorized": 40,  # For clauses that don't fit the above
+}
+
+# Reverse mapping for inference
+REVERSE_LABEL_MAP = {v: k for k, v in LABEL_MAP.items()}

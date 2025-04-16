@@ -1,0 +1,16 @@
+# Core dependencies
+python-dotenv
+streamlit
+openai>=1.0.0
+pandas
+
+# Document parsing
+python-docx
+re
+
+# BERT model (for the second track)
+transformers
+torch
+numpy
+scikit-learn
+datasets

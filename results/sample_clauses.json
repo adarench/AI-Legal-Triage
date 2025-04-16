@@ -1,0 +1,42 @@
+[
+  {
+    "clause_text": "Each party (the \"Indemnifying Party\") shall defend, indemnify and hold harmless the other party, its affiliates and their respective directors, officers, employees, attorneys, agents, contractors and sublicensees (collectively, the \"Indemnified Party\") from and against any and all claims, damages, liabilities, costs and expenses, including reasonable attorneys' fees (collectively, \"Losses\"), to the extent arising out of any third-party claim that: (a) alleges that the Indemnifying Party's performance under this Agreement or any material, information or technology provided by the Indemnifying Party under or in relation to this Agreement infringes or misappropriates any third-party intellectual property right; or (b) arises from the Indemnifying Party's breach of its obligations, representations or warranties under this Agreement.",
+    "type": "Indemnification"
+  },
+  {
+    "clause_text": "EXCEPT FOR THE EXPRESS WARRANTIES SET FORTH IN THIS AGREEMENT, PROVIDER MAKES NO WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO THE SERVICES OR SOFTWARE PROVIDED HEREUNDER, AND EXPLICITLY DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT OF THIRD-PARTY RIGHTS. CLIENT ACKNOWLEDGES THAT PROVIDER DOES NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, ERROR-FREE, OR COMPLETELY SECURE.",
+    "type": "Limitation of Liability"
+  },
+  {
+    "clause_text": "This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without giving effect to the principles of conflicts of law. Each party hereby consents to the exclusive jurisdiction of the state and federal courts located in the County of New Castle, Delaware for any action arising out of or relating to this Agreement. The parties hereby waive any objection based on forum non conveniens and any objection to venue of any action arising out of this Agreement.",
+    "type": "Governing Law"
+  },
+  {
+    "clause_text": "Either party may terminate this Agreement by providing thirty (30) days prior written notice to the other party. Additionally, either party may terminate this Agreement immediately upon written notice if the other party: (a) becomes insolvent, files for bankruptcy, or makes an assignment for the benefit of creditors; or (b) breaches any material provision of this Agreement and fails to cure such breach within fifteen (15) days after receipt of written notice from the non-breaching party.",
+    "type": "Termination Rights"
+  },
+  {
+    "clause_text": "During the term of this Agreement and for a period of one (1) year thereafter, neither party shall, without the prior written consent of the other party, directly or indirectly solicit for employment or hire any employee of the other party with whom such party has had contact in connection with the relationship arising under this Agreement. The foregoing shall not prohibit a general solicitation to the public or hiring a person who initiates contact without direct or indirect solicitation.",
+    "type": "No-Solicit Of Employees"
+  },
+  {
+    "clause_text": "Each party acknowledges that in the course of performing its obligations under this Agreement, it may have access to confidential and proprietary information of the other party (\"Confidential Information\"). Each party agrees to maintain the confidentiality of the other party's Confidential Information and not to disclose such Confidential Information to any third party or use it for any purpose other than as necessary to perform its obligations under this Agreement. This obligation of confidentiality shall survive the termination of this Agreement for a period of five (5) years.",
+    "type": "Confidentiality"
+  },
+  {
+    "clause_text": "Licensee shall not use the Software or Services to (i) violate any applicable law, statute, ordinance or regulation; (ii) transmit material that is defamatory, invasive of privacy or publicity rights, or otherwise unlawful or tortious; (iii) transmit harmful or malicious code; (iv) interfere with or disrupt the systems that host the Software or Services; or (v) attempt to gain unauthorized access to any services, accounts or computer systems beyond Licensee's authorization.",
+    "type": "Limited License"
+  },
+  {
+    "clause_text": "IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, EXEMPLARY OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO DAMAGES FOR LOST DATA, LOST PROFITS, LOST REVENUE OR COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, HOWEVER CAUSED AND UNDER ANY THEORY OF LIABILITY, INCLUDING BUT NOT LIMITED TO CONTRACT OR TORT (INCLUDING PRODUCTS LIABILITY, STRICT LIABILITY AND NEGLIGENCE), AND WHETHER OR NOT SUCH PARTY WAS OR SHOULD HAVE BEEN AWARE OR ADVISED OF THE POSSIBILITY OF SUCH DAMAGE AND NOTWITHSTANDING THE FAILURE OF ESSENTIAL PURPOSE OF ANY LIMITED REMEDY STATED HEREIN.",
+    "type": "Limitation of Liability"
+  },
+  {
+    "clause_text": "This Agreement shall automatically renew for successive one (1) year periods unless either party provides written notice of non-renewal at least sixty (60) days prior to the end of the then-current term. The fees for any renewal period shall increase by the greater of (a) five percent (5%) or (b) the percentage increase in the Consumer Price Index for All Urban Consumers (CPI-U) published by the U.S. Department of Labor for the most recent 12-month period for which data is available.",
+    "type": "Auto Renewal"
+  },
+  {
+    "clause_text": "During the term of this Agreement and for a period of two (2) years thereafter, Client shall not, directly or indirectly, develop, market, sell or license any product or service that competes with the Provider's products or services in the field of [specific industry]. This restriction shall apply worldwide. Client acknowledges that this restriction is reasonable and necessary to protect Provider's legitimate business interests.",
+    "type": "Non-Compete"
+  }
+]
