@@ -21,8 +21,16 @@ current_dir = Path(__file__).parent.absolute()
 parent_dir = current_dir.parent
 sys.path.append(str(parent_dir))
 
-# Import model predictor
-from bert_model.infer_clause import RobertaClausePredictor
+# Import directly with absolute imports to avoid relative import errors
+import torch
+from torch.nn import functional as F
+from transformers import RobertaTokenizer, RobertaForSequenceClassification
+import numpy as np
+import re
+
+# Import local modules - use direct imports instead of relative
+from bert_model.label_map import REVERSE_LABEL_MAP
+from bert_model.risk_map import get_risk_score, get_risk_explanation
 
 # Set page configuration
 st.set_page_config(
@@ -63,15 +71,148 @@ def load_sample_clauses():
         st.error(f"Error loading sample clauses: {str(e)}")
         return []
 
+# Custom prediction class to avoid import errors
+class SimpleRobertaPredictor:
+    """Simplified version of RobertaClausePredictor to avoid import issues."""
+    
+    def __init__(self, model_dir, use_post_processing=True, confidence_threshold=0.15):
+        """Initialize the model with given parameters."""
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.use_post_processing = use_post_processing
+        self.confidence_threshold = confidence_threshold
+        
+        # Load tokenizer and model directly
+        self.tokenizer = RobertaTokenizer.from_pretrained(model_dir)
+        self.model = RobertaForSequenceClassification.from_pretrained(model_dir)
+        self.model.to(self.device)
+        self.model.eval()
+        
+        st.success(f"Model loaded successfully from {model_dir}")
+    
+    def predict_clause(self, clause_text, include_explanation=True):
+        """Predict clause type and risk score."""
+        # Tokenize input
+        inputs = self.tokenizer(
+            clause_text,
+            return_tensors="pt",
+            truncation=True,
+            max_length=512,
+            padding="max_length"
+        )
+        
+        # Move inputs to device
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
+        
+        # Make prediction
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+            logits = outputs.logits
+            
+            # Get predicted class and its probability
+            probs = F.softmax(logits, dim=1)[0]
+            pred_class = torch.argmax(probs).item()
+            confidence = probs[pred_class].item()
+        
+        # Get class label
+        predicted_type = REVERSE_LABEL_MAP.get(pred_class, "Unknown")
+        
+        # Get risk score
+        risk_score = get_risk_score(predicted_type)
+        
+        # Prepare result
+        result = {
+            "type": predicted_type,
+            "risk_score": risk_score,
+            "model_confidence": confidence
+        }
+        
+        # Add explanation if requested
+        if include_explanation:
+            result["explanation"] = get_risk_explanation(predicted_type, risk_score)
+        
+        # Apply post-processing if enabled
+        if self.use_post_processing:
+            result = self._post_process_prediction(result, clause_text)
+            
+            # Apply confidence threshold after post-processing
+            if self.confidence_threshold > 0:
+                result = self._apply_confidence_threshold(result)
+        
+        return result
+    
+    def _post_process_prediction(self, prediction, clause_text):
+        """Apply rules to fix common misclassifications."""
+        predicted_type = prediction["type"]
+        text_lower = clause_text.lower()
+        
+        # Rule 1: Fix No-Solicit misclassification
+        if (("solicit" in text_lower or "hire" in text_lower) and 
+            "employee" in text_lower and 
+            predicted_type in ["Confidentiality", "Non-Compete"]):
+            prediction["type"] = "No-Solicit Of Employees"
+            prediction["risk_score"] = get_risk_score("No-Solicit Of Employees")
+            prediction["post_processed"] = True
+            
+        # Rule 2: Fix Non-Compete misclassification
+        if ((re.search(r"compet(e|ing|ition)", text_lower) or "develop" in text_lower) and 
+            "period" in text_lower and 
+            predicted_type == "Limitation of Liability"):
+            prediction["type"] = "Non-Compete"  
+            prediction["risk_score"] = get_risk_score("Non-Compete")
+            prediction["post_processed"] = True
+            
+        # Rule 3: Fix Auto-Renewal misclassification
+        if (("renew" in text_lower or "extension" in text_lower) and 
+            ("automatic" in text_lower or "successive" in text_lower) and 
+            predicted_type == "Termination Rights"):
+            prediction["type"] = "Auto Renewal"
+            prediction["risk_score"] = get_risk_score("Auto Renewal")
+            prediction["post_processed"] = True
+            
+        # Rule 4: Fix Limited License misclassification
+        if (("use" in text_lower and 
+                ("software" in text_lower or "service" in text_lower)) and
+            any(word in text_lower for word in ["violate", "prohibited", "restrictions", "shall not"]) and
+            predicted_type == "Confidentiality"):
+            prediction["type"] = "Limited License"
+            prediction["risk_score"] = get_risk_score("Limited License")
+            prediction["post_processed"] = True
+        
+        # Update explanation if type changed
+        if prediction.get("post_processed", False) and "explanation" in prediction:
+            prediction["explanation"] = get_risk_explanation(
+                prediction["type"], 
+                prediction["risk_score"]
+            )
+            
+        return prediction
+    
+    def _apply_confidence_threshold(self, prediction):
+        """Apply confidence threshold to predictions."""
+        confidence = prediction.get("model_confidence", 0.0)
+        
+        if confidence < self.confidence_threshold:
+            # Mark as uncertain but preserve original prediction
+            prediction["type_original"] = prediction["type"]
+            prediction["risk_score_original"] = prediction["risk_score"]
+            prediction["type"] = "Uncertain Classification"
+            prediction["risk_score"] = 0.5
+            prediction["low_confidence"] = True
+            
+            if "explanation" in prediction:
+                prediction["explanation_original"] = prediction["explanation"]
+                prediction["explanation"] = "The model has low confidence in its classification. Please review carefully or consult with legal counsel."
+        
+        return prediction
+
 @st.cache_resource
 def load_original_model():
     """Load the original RoBERTa model"""
     original_model_dir = os.path.join(parent_dir, "bert_model", "fine_tuned_roberta")
     with st.spinner("Loading original model..."):
-        # Apply post-processing=False to show original behavior
-        predictor = RobertaClausePredictor(
+        predictor = SimpleRobertaPredictor(
             model_dir=original_model_dir, 
-            apply_postprocessing=False,  # Parameter must match exactly what's in infer_clause.py
+            use_post_processing=False,
             confidence_threshold=0  # Disable confidence threshold for original model
         )
     return predictor
@@ -81,7 +222,11 @@ def load_improved_model():
     """Load the improved RoBERTa model"""
     improved_model_dir = os.path.join(parent_dir, "bert_model", "fine_tuned_roberta", "fine_tuned_roberta_improved")
     with st.spinner("Loading improved model..."):
-        predictor = RobertaClausePredictor(model_dir=improved_model_dir)
+        predictor = SimpleRobertaPredictor(
+            model_dir=improved_model_dir,
+            use_post_processing=True,
+            confidence_threshold=0.15
+        )
     return predictor
 
 def get_clause_by_type(sample_clauses, clause_type):
@@ -373,14 +518,17 @@ with tab2:
         
         df = pd.DataFrame(comparison_rows)
         
-        # Highlight correct classifications
-        def highlight_correct(val):
-            if isinstance(val, bool):
-                color = 'lightgreen' if val else 'lightcoral'
-                return f'background-color: {color}'
-            return ''
+        # Highlight correct classifications using newer pandas styling method
+        def highlight_correct(s):
+            return ['background-color: lightgreen' if v else 'background-color: lightcoral' 
+                    for v in s]
         
-        st.dataframe(df.style.applymap(highlight_correct, subset=['Original Correct', 'Improved Correct']), use_container_width=True)
+        # Apply styling to specific columns
+        styled_df = df.style.apply(
+            highlight_correct, 
+            subset=['Original Correct', 'Improved Correct']
+        )
+        st.dataframe(styled_df, use_container_width=True)
         
         # Show classification comparison chart
         st.subheader("Classification Accuracy")
@@ -547,8 +695,11 @@ with tab3:
         "Confidence Improvement": [target_data[key]["improved_confidence"] - target_data[key]["original_confidence"] for key in target_data]
     })
     
-    # Display as a table
-    st.dataframe(target_df.style.background_gradient(cmap='Greens', subset=['Confidence Improvement']), use_container_width=True)
+    # Display as a table with modern styling
+    st.dataframe(target_df.style.background_gradient(
+        cmap='Greens', subset=['Confidence Improvement']), 
+        use_container_width=True
+    )
     
     # Create bar chart for confidence improvement
     fig, ax = plt.subplots(figsize=(10, 6))
